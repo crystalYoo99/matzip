@@ -3,6 +3,7 @@ import { Button, StyleSheet, View, Text, AsyncStorage,TouchableOpacity } from 'r
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
+
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
     headerShown: false,
@@ -12,31 +13,27 @@ export default class HomeScreen extends React.Component {
     this.add = this.add.bind(this);
   }
   state = {
-    information: 
-      {
-        addTime : '2019/11/03',
-        name : '음식점' ,
-        time : '0:0',
-        person : '0/0'
-      }
-
+    informations: []
+  }
+  componentDidMount() {
+    AsyncStorage.getItem("Informations").then(data => {
+      const informations = JSON.parse(data || '[]');
+      this.setState({informations});
+    })
   }
   // 할일 추가 함수
-  add = ( info ) => {
-    const newMenu = {
-      addTime : Date.now(),
-      name : info.name,
-      time : info.time,
-      person : info.person
-    }
+  add ( info ) {
     this.setState(prevState => {
-      this.state.information.name = newMenu.name,
-      this.state.information.time = newMenu.time,
-      this.state.information.person = newMenu.person
+      const informations = [
+        info,
+        ...prevState.informations
+      ]
+      AsyncStorage.setItem("Informations",JSON.stringify(informations));
+      return({informations})
     });
-    console.log(this.state.information);
-  } 
-  
+    console.log(info);
+    console.log(this.state.informations);
+  }; 
 
   render() {
     return (
@@ -49,30 +46,35 @@ export default class HomeScreen extends React.Component {
               <MaterialCommunityIcons style={styles.addBtn} size={30} name='plus-circle' />
             </TouchableOpacity>
           </View>
-      <View style={styles.body}>
-        <View style = {{width: 350, flex: 1, padding: 5, justifyContent: 'center'}}>
-          <Text>{this.state.information.addTime}</Text>
-          <Text style = {{fontSize: 30,}}>{this.state.information.name}</Text>
-        </View>
-        <View style = {{ height: 45, flexDirection: 'row', borderwidth: 1, padding: 5}}>
-          <View style = {{flex: 1, borderWidth: 1,alignItems: 'center', justifyContent: 'center', borderRadius: 5}}>
-            <Text>{this.state.information.time}</Text>
-          </View>
-          <View style = {{width: 5}}/>
-          <View style = {{flex: 1, borderWidth: 1, alignItems: 'center', justifyContent: 'center',borderRadius: 5}}>
-            <Text>{this.state.information.person}</Text>
-          </View>
-          <View style = {{width: 5}}/>
-          <View style = {{flex: 1, borderWidth: 1, alignItems: 'center', justifyContent: 'center',borderRadius: 5, backgroundColor: '#b7def8', borderColor: '#fdfdfd' }}>
-            <Text>입장하기</Text>
-          </View>
-        </View>
-      </View>
+          {this.state.informations.map(data=> {
+            return(
+              <View style={styles.body}>
+                <View style = {styles.topMaterials}>
+                  <Text>{data.month}/{data.date}</Text>
+                  <Text style = {{fontSize: 30,}}>{data.menu}</Text>
+                </View>
+                <View style = {styles.bottomMaterials}>
+                  <View style = {styles.time}>
+                    <Text>{data.time}</Text>
+                  </View>
+                  <View style = {{width: 5}}/>
+                  <View style = {styles.person}>
+                    <Text>{data.person}</Text>
+                  </View>
+                  <View style = {{width: 5}}/>
+                  <View style = {styles.enter}>
+                    <Button title = {data.enter} style = {{width: 30, boderWidth: 1, justifyContent: 'center', borderRadius: 5, backgroundColor: '#b7def8', boderColor: '#fdfdfd'}} onPress={()=>this.props.navigation.navigate('Chat')}></Button>
+                  </View>
+                </View>
+              </View>
+            );
+          })}
       </View>
       
     );
   }
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -105,5 +107,40 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-},
+  },
+  topMaterials: {
+    width: 350, 
+    flex: 1, 
+    padding: 5, 
+    justifyContent: 'center'
+  },
+  bottomMaterials: { 
+    height: 45, 
+    flexDirection: 'row', 
+    borderWidth: 1, 
+    padding: 5
+  },
+  time:{
+    flex: 1, 
+    borderWidth: 1,
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    borderRadius: 5
+  },
+  person:{
+    flex: 1, 
+    borderWidth: 1,
+    alignItems: 'center', 
+    justifyContent: 'center',
+    borderRadius: 5
+  },
+  enter:{
+    flex: 1, 
+    borderWidth: 1, 
+    alignItems: 'center', 
+    justifyContent: 'center',
+    borderRadius: 5, 
+    backgroundColor: '#b7def8', 
+    borderColor: '#fdfdfd' 
+  },
 });

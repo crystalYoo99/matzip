@@ -1,33 +1,35 @@
 import React from 'react';
-import { Button, StyleSheet, View, Text, AsyncStorage,TouchableOpacity } from 'react-native';
-import Header from './Header'
+import { Button, StyleSheet, View, Text, TextInput,AsyncStorage,TouchableOpacity } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+//import Header from './Header'
 
 export default class DetailsScreen extends React.Component {
   static navigationOptions = {
     headerShown: false,
   }
   state = {
-    info : {
-      name: '',
-      time: '',
-      person: ''
+      newMenu: "",
+      newTime: "",
+      newPerson: "",
+  };
+  /*
+  addInfo = () =>{
+    const information={
+      id:Date.now(),
+      name:this.newMenu,
+      time:this.newTime,
+      person:this.newPerson
     }
+    console.log(information);
+    this.setState(prevState => ({
+      informations:[
+        information,
+        ...prevState.informations
+      ]
+    }));
+    this.props.add(informations);
   }
-  
-  addInfo = (imo) =>{
-    const newinfo = {
-      name: imo.name,
-      time: imo.time,
-      person: imo.person
-    }
-    this.setState(prevState => {
-      this.state.info.name=newinfo.name,
-      this.state.info.time=newinfo.time,
-      this.state.info.person=newinfo.person
-    });
-    console.log(this.state.info);
-  }
-  
+  */
   /*removeTodo = (id) => {
     this.setState(prevState => {
       const index = prevState.todos.findIndex(e => e.id === id);
@@ -48,18 +50,62 @@ export default class DetailsScreen extends React.Component {
   };
 
   render() {
-    let add = this.props.navigation.getParam("add");
+    let addInfo = this.props.navigation.getParam("add",null)
     return (
       <View style={styles.container}>
         <View style = {{height: 40}}/>
         <Text style={styles.title}>게시판 추가</Text>
-        <Header add={this.addInfo}/>
-        <Button
-          title="Go to Home"
-          onPress={() => {
-            add(this.state)
-            this.props.navigation.navigate('Home')}}
-        />
+        <View style={styles.input}> 
+            <TextInput 
+                style={styles.inputText}
+                placeholder='Enter new menu'
+                autoCorrect={ false }
+                value={this.state.newMenu}
+                onChangeText={(menu) => this.setState({newMenu: menu})}
+            />
+        </View>
+        <View style = {{height : 15}}/>
+        <View style={styles.input}> 
+            <TextInput 
+                style={styles.inputText}
+                placeholder='Enter delivery time'
+                autoCorrect={ false }
+                value={this.state.newTime}
+                onChangeText={(time) => this.setState({newTime:time})}
+            /> 
+        </View>
+        <View style = {{height : 15}}/>
+        
+        <View style={styles.input}> 
+            <TextInput 
+                style={styles.inputText}
+                placeholder='Enter person number'
+                autoCorrect={ false }          
+                value={this.state.newPerson}          
+                onChangeText={(person) => this.setState({newPerson:person})}
+            />
+        </View>
+        <View style = {{height: 10}}/>
+        <View style = {{flexDirection: 'row'}}>
+            <View style = {{flex: 1}}/>
+                <TouchableOpacity onPress={()=>{
+                  const newInfo = {
+                    id: Date.now(),
+                    date: new Date().getDate(),
+                    month: new Date().getMonth()+1,
+                    menu: this.state.newMenu,
+                    time: this.state.newTime,
+                    person: this.state.newPerson,
+                    enter : '입장하기'
+                  };
+                  addInfo(newInfo);
+                  this.props.navigation.goBack();
+                }}>
+                    <MaterialCommunityIcons style={styles.addBtn} size={30} name='plus-circle' />
+                </TouchableOpacity>
+            <View style = {{flex: 1}}/>
+        </View>
+        <View style = {{height: 20}}/>
       </View>
     );
   }
@@ -96,5 +142,17 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-},
+  },
+  input: {
+    borderRadius: 10,
+    backgroundColor: "#FFF",
+    paddingLeft: 10,
+    paddingRight: 10,
+    height: 50,
+    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomColor: "#bbb",
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
 });
