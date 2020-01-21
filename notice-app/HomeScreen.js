@@ -35,6 +35,18 @@ export default class HomeScreen extends React.Component {
     console.log(this.state.informations);
   }; 
 
+  remove = ( id ) => {
+    this.setState(prevState => {
+      const index = prevState.informations.findIndex(e => e.id === id);
+      prevState.informations.splice(index, 1);
+      return ({
+        informations: [
+          ...prevState.informations
+        ]
+      })
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -49,9 +61,14 @@ export default class HomeScreen extends React.Component {
           {this.state.informations.map(data=> {
             return(
               <View style={styles.body}>
+                <View style = {{flexDirection: 'row'}}>
                 <View style = {styles.topMaterials}>
                   <Text>{data.month}/{data.date}</Text>
                   <Text style = {{fontSize: 30,}}>{data.menu}</Text>
+                </View>
+                <TouchableOpacity onPressOut = {() => this.remove(data.id)}>
+                  <MaterialCommunityIcons style = {styles.todoDelBtn} size = {30} name = 'delete-outline' />
+                </TouchableOpacity>
                 </View>
                 <View style = {styles.bottomMaterials}>
                   <View style = {styles.time}>
@@ -142,5 +159,8 @@ const styles = StyleSheet.create({
     borderRadius: 5, 
     backgroundColor: '#b7def8', 
     borderColor: '#fdfdfd' 
+  },
+  todoDelBtn: {
+    color: '#777'
   },
 });
