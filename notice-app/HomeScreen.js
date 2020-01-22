@@ -11,6 +11,7 @@ export default class HomeScreen extends React.Component {
   constructor(props){
     super(props)
     this.add = this.add.bind(this);
+    this.update = this.update.bind(this);
   }
   state = {
     informations: []
@@ -31,8 +32,7 @@ export default class HomeScreen extends React.Component {
       AsyncStorage.setItem("Informations",JSON.stringify(informations));
       return({informations})
     });
-    console.log(info);
-    console.log(this.state.informations);
+
   }; 
 
   remove = ( id ) => {
@@ -45,6 +45,19 @@ export default class HomeScreen extends React.Component {
         ]
       })
     });
+  }
+  update = (id,info) => {
+    this.setState( prevState => {     
+      const index = prevState.informations.findindex( e => e.id === id);     
+      prevState.informations[index]=info;
+      return({ 
+        informations : [
+          ...prevState.informations 
+        ]
+  
+      })
+      }
+      )
   }
 
   render() {
@@ -66,6 +79,9 @@ export default class HomeScreen extends React.Component {
                   <Text>{data.month}/{data.date}</Text>
                   <Text style = {{fontSize: 30,}}>{data.menu}</Text>
                 </View>
+                <TouchableOpacity onPressOut = {() => this.props.navigation.navigate('Update',{update: this.update, id:data.id, data:data})}>
+                  <MaterialCommunityIcons style = {styles.todoDelBtn} size = {30} name = 'update' />
+                </TouchableOpacity>
                 <TouchableOpacity onPressOut = {() => this.remove(data.id)}>
                   <MaterialCommunityIcons style = {styles.todoDelBtn} size = {30} name = 'delete-outline' />
                 </TouchableOpacity>
