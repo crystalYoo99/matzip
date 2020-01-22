@@ -29,6 +29,7 @@ export default class HomeScreen extends React.Component {
         info,
         ...prevState.informations
       ]
+      console.log(informations);
       AsyncStorage.setItem("Informations",JSON.stringify(informations));
       return({informations})
     });
@@ -46,18 +47,28 @@ export default class HomeScreen extends React.Component {
       })
     });
   }
-  update = (id,info) => {
+  update (id,info){
+    
     this.setState( prevState => {     
-      const index = prevState.informations.findindex( e => e.id === id);     
+      const index = prevState.informations.findIndex( e => e.id === id);      
+      
+      
       prevState.informations[index]=info;
-      return({ 
-        informations : [
-          ...prevState.informations 
-        ]
-  
-      })
+      console.log(prevState.informations[index]);
+
+      const informations = [
+
+        ...prevState.informations
+      ]
+
+      
+      AsyncStorage.setItem("Informations",JSON.stringify(informations));
+      
+      
+      return({informations})
       }
       )
+
   }
 
   render() {
@@ -73,7 +84,7 @@ export default class HomeScreen extends React.Component {
           </View>
           {this.state.informations.map(data=> {
             return(
-              <View style={styles.body}>
+              <View style={styles.body} key = { data.id }>
                 <View style = {{flexDirection: 'row'}}>
                 <View style = {styles.topMaterials}>
                   <Text>{data.month}/{data.date}</Text>

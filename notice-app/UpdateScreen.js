@@ -54,7 +54,7 @@ export default class DetailsScreen extends React.Component {
             <TextInput 
                 style={styles.inputText}
                 placeholder='Enter person number'
-                autoCorrect={ false }          
+                         autoCorrect={ false }          
                 value={this.state.newPerson}          
                 onChangeText={(person) => this.setState({newPerson:person})}
             />
@@ -72,6 +72,8 @@ export default class DetailsScreen extends React.Component {
                     person: this.state.newPerson,
                     enter : '입장하기'
                   };
+                  
+                  
                   update(id,newInfo);
                   this.props.navigation.goBack();
                 }}>
